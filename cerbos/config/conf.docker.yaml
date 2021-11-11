@@ -1,0 +1,7 @@
+---
+server:
+  httpListenAddr: ":${PORT}"
+storage:
+  driver: "disk"
+  disk:
+    directory: /policies

@@ -150,7 +150,7 @@ const Main = () => (
     />
 
     <APIRequest
-      apiSample={userAPISample}
+      apiSample={contactAPISample}
       endpoint={"/api/getAuthenticatedUserId"}
       title={`Get the authenticated user's ID`}
       signedInMessage={"You are signed in so your userId will be returned"}

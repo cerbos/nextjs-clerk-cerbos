@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import styles from "../styles/Home.module.css";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { APIRequest } from "../components/APIRequest";
 
 const ClerkFeatures = () => (
   <Link href="/user">
@@ -40,7 +41,48 @@ const SignupLink = () => (
   </Link>
 );
 
-const apiSample = `import { withSession } from '@clerk/nextjs/api'
+const userAPISample = `import { requireSession, users } from "@clerk/nextjs/api";
+const { Cerbos } = require("cerbos");
+const cerbos = new Cerbos({
+  hostname: "http://localhost:3592", // The Cerbos PDP instance
+});
+
+export default requireSession(async (req, res) => {
+  const user = await users.getUser(req.session.userId);
+  const cerbosPayload = {
+    principal: {
+      id: req.session.userId,
+      roles: ["user"],
+      attr: user,
+    },
+    // these resources would be fetched from a DB normally
+    resource: {
+      kind: "contact",
+      instances: {
+        "5cc22de4": {
+          attr: {
+            owner: req.session.userId,
+            lastUpdated: new Date(2020, 10, 10),
+          },
+        },
+        ac29e6df: {
+          attr: {
+            owner: "test2",
+            lastUpdated: new Date(2020, 10, 12),
+          },
+        },
+      },
+    },
+    actions: ["read", "update", "delete"],
+  };
+
+  const result = await cerbos.check(cerbosPayload);
+  res.json(result.resp);
+});
+
+`;
+
+const contactAPISample = `import { withSession } from '@clerk/nextjs/api'
 
 export default withSession((req, res) => {
   res.statusCode = 200
@@ -91,7 +133,29 @@ const Main = () => (
       </div>
     </div>
 
-    <APIRequest />
+    <APIRequest
+      apiSample={userAPISample}
+      endpoint={"/api/getContacts"}
+      title={`Get contacts authroized via Cerbos`}
+      signedInMessage={
+        "You are signed in so the actions for two contact resources will be returned based on Cerbos policies"
+      }
+      signedOutMessage={"You are signed out so unauthorized will be returned"}
+      description={
+        "Retrieve what permissions the user has to two Contact resouces based on upon Cerbos policies"
+      }
+    />
+
+    <APIRequest
+      apiSample={userAPISample}
+      endpoint={"/api/getAuthenticatedUserId"}
+      title={`Get the authenticated user's ID`}
+      signedInMessage={"You are signed in so your userId will be returned"}
+      signedOutMessage={"You are signed out so null be returned"}
+      description={
+        "Retrieve the user ID of the signed in user, or null if there is no user"
+      }
+    />
 
     <div className={styles.links}>
       <Link href="https://docs.clerk.dev?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter">
@@ -107,73 +171,6 @@ const Main = () => (
     </div>
   </main>
 );
-
-const APIRequest = () => {
-  React.useEffect(() => {
-    if (window.Prism) {
-      window.Prism.highlightAll();
-    }
-  });
-  const [response, setResponse] = React.useState(
-    "// Click above to run the request"
-  );
-  const makeRequest = async () => {
-    setResponse("// Loading...");
-
-    try {
-      const res = await fetch("/api/getAuthenticatedUserId");
-      const body = await res.json();
-      setResponse(JSON.stringify(body, null, "  "));
-    } catch (e) {
-      setResponse(
-        "// There was an error with the request. Please contact support@clerk.dev"
-      );
-    }
-  };
-  return (
-    <div className={styles.backend}>
-      <h2>API request example</h2>
-      <div className={styles.card}>
-        <button
-          target="_blank"
-          rel="noopener"
-          className={styles.cardContent}
-          onClick={() => makeRequest()}
-        >
-          <img src="/icons/server.svg" />
-          <div>
-            <h3>fetch('/api/getAuthenticatedUserId')</h3>
-            <p>
-              Retrieve the user ID of the signed in user, or null if there is no
-              user
-            </p>
-          </div>
-          <div className={styles.arrow}>
-            <img src="/icons/download.svg" />
-          </div>
-        </button>
-      </div>
-      <h4>
-        Response
-        <em>
-          <SignedIn>
-            You are signed in, so the request will return your user ID
-          </SignedIn>
-          <SignedOut>
-            You are signed out, so the request will return null
-          </SignedOut>
-        </em>
-      </h4>
-      <pre>
-        <code className="language-js">{response}</code>
-      </pre>
-      <h4>pages/api/getAuthenticatedUserId.js</h4>
-      <pre>
-        <code className="language-js">{apiSample}</code>
-      </pre>
-    </div>
-  );
-};
 
 // Footer component
 const Footer = () => (

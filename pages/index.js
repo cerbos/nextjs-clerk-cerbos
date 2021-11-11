@@ -53,7 +53,8 @@ export default requireSession(async (req, res) => {
     principal: {
       id: req.session.userId,
       roles: ["user"],
-      attr: user,
+      // pass in the Clerk user profile to use attributes in policies
+      attr: user, 
     },
     // these resources would be fetched from a DB normally
     resource: {
@@ -61,22 +62,24 @@ export default requireSession(async (req, res) => {
       instances: {
         "5cc22de4": {
           attr: {
-            owner: req.session.userId,
-            lastUpdated: new Date(2020, 10, 10),
+            owner: req.session.userId, // faked to demostrate ownership policy
+            lastUpdated: "2021-10-10",
           },
         },
         ac29e6df: {
           attr: {
-            owner: "test2",
-            lastUpdated: new Date(2020, 10, 12),
+            owner: "somerUserId",
+            lastUpdated: "2021-01-20",
           },
         },
       },
     },
+    // the list of actions on the resource to check authorization for
     actions: ["read", "update", "delete"],
   };
 
   const result = await cerbos.check(cerbosPayload);
+  // make decisions baaased on the result but return payload for demo purposes
   res.json(result.resp);
 });
 

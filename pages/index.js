@@ -139,7 +139,7 @@ const Main = () => (
     <APIRequest
       apiSample={userAPISample}
       endpoint={"/api/getContacts"}
-      title={`Get contacts authroized via Cerbos`}
+      title={`Get contacts authorized via Cerbos`}
       signedInMessage={
         "You are signed in so the actions for two contact resources will be returned based on Cerbos policies"
       }

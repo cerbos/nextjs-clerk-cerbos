@@ -9,6 +9,7 @@ export const APIRequest = ({
   signedInMessage,
   signedOutMessage,
   description,
+  intro,
 }) => {
   React.useEffect(() => {
     if (window.Prism) {
@@ -34,6 +35,7 @@ export const APIRequest = ({
   return (
     <div className={styles.backend}>
       <h2>{title}</h2>
+      <p>{intro}</p>
       <div className={styles.card}>
         <button
           target="_blank"

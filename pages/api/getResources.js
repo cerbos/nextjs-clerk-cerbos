@@ -17,13 +17,13 @@ export default requireSession(async (req, res) => {
     resource: {
       kind: "contact",
       instances: {
-        "5cc22de4": {
+        "id#1": {
           attr: {
             owner: req.session.userId,
             lastUpdated: new Date(2020, 10, 10),
           },
         },
-        ac29e6df: {
+        "id#2": {
           attr: {
             owner: "test2",
             lastUpdated: new Date(2020, 10, 12),
@@ -35,5 +35,6 @@ export default requireSession(async (req, res) => {
   };
 
   const result = await cerbos.check(cerbosPayload);
+  delete result.resp.meta;
   res.json(result.resp);
 });

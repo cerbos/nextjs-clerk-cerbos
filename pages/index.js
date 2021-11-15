@@ -2,7 +2,7 @@ import React from "react";
 import Head from "next/head";
 import Link from "next/link";
 import styles from "../styles/Home.module.css";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import { APIRequest } from "../components/APIRequest";
 
 const ClerkFeatures = () => (
@@ -10,7 +10,7 @@ const ClerkFeatures = () => (
     <a className={styles.cardContent}>
       <img src="/icons/layout.svg" />
       <div>
-        <h3>Explore features provided by Clerk</h3>
+        <h3>Manage your Clerk user profile</h3>
         <p>
           Interact with the user button, user profile, and more to preview what
           your users will see
@@ -28,10 +28,11 @@ const SignupLink = () => (
     <a className={styles.cardContent}>
       <img src="/icons/user-plus.svg" />
       <div>
-        <h3>Sign up for an account</h3>
+        <h3>Log in/Sign up for an account</h3>
         <p>
-          Sign up and sign in to explore all the features provided by Clerk
-          out-of-the-box
+          Login to your account or sign up for a new account maanged by
+          Clerk.dev. This will provide your identity which will be used by
+          Cerbos for authorization.
         </p>
       </div>
       <div className={styles.arrow}>
@@ -60,13 +61,13 @@ export default requireSession(async (req, res) => {
     resource: {
       kind: "contact",
       instances: {
-        "5cc22de4": {
+        "id#1": {
           attr: {
             owner: req.session.userId, // faked to demostrate ownership policy
             lastUpdated: "2021-10-10",
           },
         },
-        ac29e6df: {
+        "id#2": {
           attr: {
             owner: "somerUserId",
             lastUpdated: "2021-01-20",
@@ -102,78 +103,128 @@ export default withSession((req, res) => {
 // on whether or not a visitor is signed in.
 //
 // https://docs.clerk.dev/frontend/react/signedin-and-signedout
-const Main = () => (
-  <main className={styles.main}>
-    <h1 className={styles.title}>Welcome to your new app</h1>
-    <p className={styles.description}>Sign up for an account to get started</p>
+const Main = () => {
+  return (
+    <main className={styles.main}>
+      <h1 className={styles.title}>Clerk + Cerbos Demo App</h1>
+      <p className={styles.description}>
+        Example NextJS app using Clerk for authentication and Cerbos for
+        authorization.
+      </p>
 
-    <div className={styles.cards}>
-      <div className={styles.card}>
-        <SignedIn>
-          <ClerkFeatures />
-        </SignedIn>
-        <SignedOut>
-          <SignupLink />
-        </SignedOut>
+      <div className={styles.cards}>
+        <div className={styles.card}>
+          <SignedIn>
+            <ClerkFeatures />
+          </SignedIn>
+          <SignedOut>
+            <SignupLink />
+          </SignedOut>
+        </div>
       </div>
 
-      <div className={styles.card}>
-        <Link href="https://dashboard.clerk.dev?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter">
-          <a target="_blank" rel="noopener" className={styles.cardContent}>
-            <img src="/icons/settings.svg" />
-            <div>
-              <h3>Configure settings for your app</h3>
-              <p>
-                Visit Clerk to manage instances and configure settings for user
-                management, theme, and more
-              </p>
-            </div>
-            <div className={styles.arrow}>
-              <img src="/icons/arrow-right.svg" />
-            </div>
+      <SignedIn>
+        <CerbosDemo />
+        {/* <APIRequest
+        apiSample={contactAPISample}
+        endpoint={"/api/getAuthenticatedUserId"}
+        title={`Get the authenticated user's ID`}
+        signedInMessage={"You are signed in so your userId will be returned"}
+        signedOutMessage={"You are signed out so null be returned"}
+        description={
+          "Retrieve the user ID of the signed in user, or null if there is no user"
+        }
+      /> */}
+        <div className={styles.backend}>
+          <h3>Cerbos Policy</h3>
+          <p>The policy deployed states that:</p>
+          <ul>
+            <li>
+              Principals with the role of <code>Admin</code> or{" "}
+              <code>User</code> are allowed to do the <b>create</b> or{" "}
+              <b>read</b> actions.
+            </li>
+            <li>
+              Principals with the role of <code>Admin</code> are allowed to do
+              the <b>update</b> and <b>delete</b> actions.
+            </li>
+            <li>
+              Principals with the role of <code>User</code> whose ID matches the
+              owner attribute of the resource are allowed to do the{" "}
+              <b>update</b> and <b>delete</b> actions.
+            </li>
+          </ul>
+          <pre>
+            <code className="language-yaml">
+              {`---
+apiVersion: api.cerbos.dev/v1
+resourcePolicy:
+  version: default
+  resource: contact
+  rules:
+    - actions: ["read", "create"]
+      effect: EFFECT_ALLOW
+      roles:
+        - admin
+        - user
+
+    - actions: ["update", "delete"]
+      effect: EFFECT_ALLOW
+      roles:
+        - admin
+
+    - actions: ["update", "delete"]
+      effect: EFFECT_ALLOW
+      roles:
+        - user
+      condition:
+        match:
+          expr: request.resource.attr.owner == request.principal.id`}
+            </code>
+          </pre>
+        </div>
+      </SignedIn>
+
+      <div className={styles.links}>
+        <Link href="https://docs.clerk.dev?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter">
+          <a target="_blank" rel="noopener" className={styles.link}>
+            <span className={styles.linkText}>Read Clerk documentation</span>
+          </a>
+        </Link>
+        <Link href="https://docs.cerbos.dev">
+          <a target="_blank" rel="noopener" className={styles.link}>
+            <span className={styles.linkText}>Read Cerbos documentation</span>
+          </a>
+        </Link>
+        <Link href="https://nextjs.org/docs">
+          <a target="_blank" rel="noopener" className={styles.link}>
+            <span className={styles.linkText}>Read NextJS documentation</span>
           </a>
         </Link>
       </div>
-    </div>
+    </main>
+  );
+};
 
+const CerbosDemo = () => {
+  const user = useUser();
+
+  return (
     <APIRequest
       apiSample={userAPISample}
-      endpoint={"/api/getContacts"}
-      title={`Get contacts authroized via Cerbos`}
+      endpoint={"/api/getResources"}
+      title={`Access API authorized by Cerbos`}
+      intro={`Now that you are authenticated as ${user.primaryEmailAddress} the following makes a request to the API endpoint of a sample CRM application. This will call Cerbos to check that you are authorized based on the resources being requested. The result will be returned below demonstrating the authorization decision from Cerbos.`}
       signedInMessage={
         "You are signed in so the actions for two contact resources will be returned based on Cerbos policies"
       }
       signedOutMessage={"You are signed out so unauthorized will be returned"}
       description={
-        "Retrieve what permissions the user has to two Contact resouces based on upon Cerbos policies"
+        "Retrieve what permissions a user has on resouces based on upon Cerbos policies. The backend will make an authorization call to the Cerbos instance using your Clerk identity and two sample resouces."
       }
     />
-
-    <APIRequest
-      apiSample={contactAPISample}
-      endpoint={"/api/getAuthenticatedUserId"}
-      title={`Get the authenticated user's ID`}
-      signedInMessage={"You are signed in so your userId will be returned"}
-      signedOutMessage={"You are signed out so null be returned"}
-      description={
-        "Retrieve the user ID of the signed in user, or null if there is no user"
-      }
-    />
-
-    <div className={styles.links}>
-      <Link href="https://docs.clerk.dev?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter">
-        <a target="_blank" rel="noopener" className={styles.link}>
-          <span className={styles.linkText}>Read Clerk documentation</span>
-        </a>
-      </Link>
-      <Link href="https://nextjs.org/docs">
-        <a target="_blank" rel="noopener" className={styles.link}>
-          <span className={styles.linkText}>Read NextJS documentation</span>
-        </a>
-      </Link>
-    </div>
-  </main>
-);
+  );
+};
 
 // Footer component
 const Footer = () => (
@@ -186,6 +237,10 @@ const Footer = () => (
       <img src="/clerk.svg" alt="Clerk.dev" className={styles.logo} />
     </a>
     +
+    <a href="https://cerbos.dev" target="_blank">
+      <img src="/cerbos.svg" alt="Cerbos.dev" className={styles.logo} />
+    </a>
+    +
     <a href="https://nextjs.org/" target="_blank" rel="noopener">
       <img src="/nextjs.svg" alt="Next.js" className={styles.logo} />
     </a>
@@ -195,7 +250,7 @@ const Footer = () => (
 const Home = () => (
   <div className={styles.container}>
     <Head>
-      <title>Create Next App</title>
+      <title>Clerk + Cerbos Demo App</title>
       <link rel="icon" href="/favicon.ico" />
       <meta
         name="viewport"

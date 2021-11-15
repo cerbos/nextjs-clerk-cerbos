@@ -54,10 +54,6 @@
   text-align: center;
 }
 
-.arrow {
-  display: none;
-}
-
 .cards {
   margin: 2rem;
 }
@@ -176,15 +172,15 @@
 
   .card {
     margin-bottom: 1rem;
+    border-color: #f2f2f2;
   }
 
   .card:hover,
   .card:focus,
   .card:active {
-    border-color: #f2f2f2;
   }
 
-  .card:hover .arrow {
+  .card .arrow {
     display: flex;
     align-items: center;
     justify-content: center;

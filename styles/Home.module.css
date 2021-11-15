@@ -106,6 +106,10 @@
   line-height: 1.5;
 }
 
+.card:hover h3 {
+  text-decoration: underline;
+}
+
 .card p {
   margin: 0;
   font-size: 1rem;

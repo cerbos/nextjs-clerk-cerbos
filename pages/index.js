@@ -42,7 +42,9 @@ const SignupLink = () => (
   </Link>
 );
 
-const userAPISample = `import { requireSession, users } from "@clerk/nextjs/api";
+const userAPISample = (
+  id
+) => `import { requireSession, users } from "@clerk/nextjs/api";
 const { Cerbos } = require("cerbos");
 const cerbos = new Cerbos({
   hostname: "http://localhost:3592", // The Cerbos PDP instance
@@ -52,7 +54,7 @@ export default requireSession(async (req, res) => {
   const user = await users.getUser(req.session.userId);
   const cerbosPayload = {
     principal: {
-      id: req.session.userId,
+      id: "${id}", // Clerk user ID
       roles: ["user"],
       // pass in the Clerk user profile to use attributes in policies
       attr: user, 
@@ -63,7 +65,7 @@ export default requireSession(async (req, res) => {
       instances: {
         "id#1": {
           attr: {
-            owner: req.session.userId, // faked to demostrate ownership policy
+            owner: "${id}", // faked to demostrate ownership policy
             lastUpdated: "2021-10-10",
           },
         },
@@ -125,16 +127,7 @@ const Main = () => {
 
       <SignedIn>
         <CerbosDemo />
-        {/* <APIRequest
-        apiSample={contactAPISample}
-        endpoint={"/api/getAuthenticatedUserId"}
-        title={`Get the authenticated user's ID`}
-        signedInMessage={"You are signed in so your userId will be returned"}
-        signedOutMessage={"You are signed out so null be returned"}
-        description={
-          "Retrieve the user ID of the signed in user, or null if there is no user"
-        }
-      /> */}
+
         <div className={styles.backend}>
           <h3>Cerbos Policy</h3>
           <p>The policy deployed states that:</p>
@@ -211,7 +204,7 @@ const CerbosDemo = () => {
 
   return (
     <APIRequest
-      apiSample={userAPISample}
+      apiSample={userAPISample(user.id)}
       endpoint={"/api/getResources"}
       title={`Access API authorized by Cerbos`}
       intro={`Now that you are authenticated as ${user.primaryEmailAddress} the following makes a request to the API endpoint of a sample CRM application. This will call Cerbos to check that you are authorized based on the resources being requested. The result will be returned below demonstrating the authorization decision from Cerbos.`}

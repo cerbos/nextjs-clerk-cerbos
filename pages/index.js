@@ -4,6 +4,8 @@ import Link from "next/link";
 import styles from "../styles/Home.module.css";
 import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import { APIRequest } from "../components/APIRequest";
+import CerbosPolicy from "../components/CerbosPolicy";
+import RoleSelect from "../components/RoleSelect";
 
 const ClerkFeatures = () => (
   <Link href="/user">
@@ -89,20 +91,7 @@ export default requireSession(async (req, res) => {
 
   // return the payload for demo purposes
   res.json(result.resp);
-});
-
-`;
-
-const contactAPISample = `import { withSession } from '@clerk/nextjs/api'
-
-export default withSession((req, res) => {
-  res.statusCode = 200
-  if (req.session) {
-    res.json({ id: req.session.userId })
-  } else {
-    res.json({ id: null })
-  }
-})`;
+});`;
 
 // Main component using <SignedIn> & <SignedOut>.
 //
@@ -131,56 +120,8 @@ const Main = () => {
       </div>
 
       <SignedIn>
+        <CerbosPolicy />
         <CerbosDemo />
-
-        <div className={styles.backend}>
-          <h3>Cerbos Policy</h3>
-          <p>The policy deployed states that:</p>
-          <ul>
-            <li>
-              Principals with the role of <code>Admin</code> or{" "}
-              <code>User</code> are allowed to do the <b>create</b> or{" "}
-              <b>read</b> actions.
-            </li>
-            <li>
-              Principals with the role of <code>Admin</code> are allowed to do
-              the <b>update</b> and <b>delete</b> actions.
-            </li>
-            <li>
-              Principals with the role of <code>User</code> whose ID matches the
-              owner attribute of the resource are allowed to do the{" "}
-              <b>update</b> and <b>delete</b> actions.
-            </li>
-          </ul>
-          <pre>
-            <code className="language-yaml">
-              {`---
-apiVersion: api.cerbos.dev/v1
-resourcePolicy:
-  version: default
-  resource: contact
-  rules:
-    - actions: ["read", "create"]
-      effect: EFFECT_ALLOW
-      roles:
-        - admin
-        - user
-
-    - actions: ["update", "delete"]
-      effect: EFFECT_ALLOW
-      roles:
-        - admin
-
-    - actions: ["update", "delete"]
-      effect: EFFECT_ALLOW
-      roles:
-        - user
-      condition:
-        match:
-          expr: request.resource.attr.owner == request.principal.id`}
-            </code>
-          </pre>
-        </div>
       </SignedIn>
 
       <div className={styles.links}>
@@ -209,7 +150,7 @@ const CerbosDemo = () => {
 
   return (
     <div>
-      <Role />
+      <RoleSelect />
       <APIRequest
         apiSample={userAPISample(user.id)}
         endpoint={"/api/getResources"}
@@ -223,57 +164,6 @@ const CerbosDemo = () => {
           "Retrieve what permissions a user has on resouces based on upon Cerbos policies. The backend will make an authorization call to the Cerbos instance using your Clerk identity and two sample resouces."
         }
       />
-    </div>
-  );
-};
-
-const Role = () => {
-  const user = useUser();
-  const [currentRole, setCurrentRole] = React.useState(
-    user.publicMetadata.role || "user"
-  );
-  const [loading, setLoading] = React.useState(false);
-
-  const setRole = async (role) => {
-    setLoading(true);
-
-    try {
-      await fetch("/api/updateRole", {
-        method: "POST", // or 'PUT'
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ role }),
-      });
-      setCurrentRole(role);
-    } catch (e) {}
-    setLoading(false);
-  };
-
-  return (
-    <div className={styles.backend}>
-      <h2>Demo: Set your Role</h2>
-      <p>
-        For this demo set a role on your Clerk user - this is stored in the
-        publicMetadata field of your user profile and passed into Cerbos for use
-        in authorization.
-      </p>
-      <select
-        value={currentRole}
-        onChange={(e) => {
-          setRole(e.currentTarget.value);
-        }}
-        disabled={loading}
-        className={styles.roleSelect}
-      >
-        <option value="">Select a role</option>
-        <option value="admin">Admin</option>
-        <option value="user">User</option>
-      </select>
-      <p>
-        Once you change the role, re-run the below request to see the impact on
-        the authorization result.
-      </p>
     </div>
   );
 };

@@ -83,7 +83,7 @@ export default requireSession(async (req, res) => {
 
   const result = await cerbos.check(cerbosPayload);
   // make decisions baased on the result
-  // if(result.isAuthorized("id#1", "edit")) {
+  // if(result.isAuthorized("id#1", "update")) {
   //  ... do edit action
   // }
 

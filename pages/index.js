@@ -55,9 +55,9 @@ export default requireSession(async (req, res) => {
   const cerbosPayload = {
     principal: {
       id: "${id}", // Clerk user ID
-      roles: ["user"],
+      roles: user.publicMetadata.roles, // Clerk user roles
       // pass in the Clerk user profile to use attributes in policies
-      attr: user, 
+      attr: user,
     },
     // these resources would be fetched from a DB normally
     resource: {
@@ -203,19 +203,73 @@ const CerbosDemo = () => {
   const user = useUser();
 
   return (
-    <APIRequest
-      apiSample={userAPISample(user.id)}
-      endpoint={"/api/getResources"}
-      title={`Access API authorized by Cerbos`}
-      intro={`Now that you are authenticated as ${user.primaryEmailAddress} the following makes a request to the API endpoint of a sample CRM application. This will call Cerbos to check that you are authorized based on the resources being requested. The result will be returned below demonstrating the authorization decision from Cerbos.`}
-      signedInMessage={
-        "You are signed in so the actions for two contact resources will be returned based on Cerbos policies"
-      }
-      signedOutMessage={"You are signed out so unauthorized will be returned"}
-      description={
-        "Retrieve what permissions a user has on resouces based on upon Cerbos policies. The backend will make an authorization call to the Cerbos instance using your Clerk identity and two sample resouces."
-      }
-    />
+    <div>
+      <Role />
+      <APIRequest
+        apiSample={userAPISample(user.id)}
+        endpoint={"/api/getResources"}
+        title={`Access API authorized by Cerbos`}
+        intro={`Now that you are authenticated as ${user.primaryEmailAddress} the following makes a request to the API endpoint of a sample CRM application. This will call Cerbos to check that you are authorized based on the resources being requested. The result will be returned below demonstrating the authorization decision from Cerbos.`}
+        signedInMessage={
+          "You are signed in so the actions for two contact resources will be returned based on Cerbos policies"
+        }
+        signedOutMessage={"You are signed out so unauthorized will be returned"}
+        description={
+          "Retrieve what permissions a user has on resouces based on upon Cerbos policies. The backend will make an authorization call to the Cerbos instance using your Clerk identity and two sample resouces."
+        }
+      />
+    </div>
+  );
+};
+
+const Role = () => {
+  const user = useUser();
+  const [currentRole, setCurrentRole] = React.useState(
+    user.publicMetadata.role || "user"
+  );
+  const [loading, setLoading] = React.useState(false);
+
+  const setRole = async (role) => {
+    setLoading(true);
+
+    try {
+      await fetch("/api/updateRole", {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ role }),
+      });
+      setCurrentRole(role);
+    } catch (e) {}
+    setLoading(false);
+  };
+
+  return (
+    <div className={styles.backend}>
+      <h2>Demo: Set your Role</h2>
+      <p>
+        For this demo set a role on your Clerk user - this is stored in the
+        publicMetadata field of your user profile and passed into Cerbos for use
+        in authorization.
+      </p>
+      <select
+        value={currentRole}
+        onChange={(e) => {
+          setRole(e.currentTarget.value);
+        }}
+        disabled={loading}
+        className={styles.roleSelect}
+      >
+        <option value="">Select a role</option>
+        <option value="admin">Admin</option>
+        <option value="user">User</option>
+      </select>
+      <p>
+        Once you change the role, re-run the below request to see the impact on
+        the authorization result.
+      </p>
+    </div>
   );
 };
 

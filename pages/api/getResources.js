@@ -6,10 +6,15 @@ const cerbos = new Cerbos({
 
 export default requireSession(async (req, res) => {
   const user = await users.getUser(req.session.userId);
+
+  const roles = user.publicMetadata.role
+    ? [user.publicMetadata.role]
+    : ["user"];
+
   const cerbosPayload = {
     principal: {
       id: req.session.userId,
-      roles: ["user"], //roles from Clerk profile
+      roles, //roles from Clerk profile
       attr: {
         email: user.email,
       },

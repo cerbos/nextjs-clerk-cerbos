@@ -1,39 +1,17 @@
 # Clerk and Next.js Example
 
-This example shows how to use [Clerk](https://www.clerk.dev/?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter) with Next.js. The example features adding sign up, sign in, profile management, and an authenticated API route to your Next.js application.
+This example shows how to use [Clerk](https://www.clerk.dev/?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter) with [Cerbos](https://cerbos.dev) in a Next.js application. The example features adding sign up, sign in, profile management, and an authenticated API route to your Next.js application which using Cerbos to authorize access.
 
 ## Demo
 
-A hosted demo of this example is available at [clerk-nextjs-example.vercel.app](https://clerk-nextjs-example.vercel.app)
-
-## Deploy your own
-
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/clerkinc/clerk-nextjs-starter&integration-ids=oac_7uYNbc9CdDAZmNqbt3LEkO3a)
-
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
-
-```bash
-npx create-next-app --example with-clerk with-clerk-app
-# or
-yarn create next-app --example with-clerk with-clerk-app
-```
-
-To run the example locally you need to:
-
-1. Sign up at [Clerk.dev](https://www.clerk.dev/?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter).
-2. Go to [Clerk's dashboard](https://dashboard.clerk.dev/?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter) and create an application.
-3. Set the required Clerk environment variables from your Clerk project as shown at [the example env file](./.env.local.sample).
-4. `yarn` to install the required dependencies.
-5. `yarn dev` to launch the development server.
+A hosted demo of this example is available at [https://nextjs-clerk-cerbos.vercel.app/](https://nextjs-clerk-cerbos.vercel.app/)
 
 ## Learn More
 
-To learn more about Clerk.dev and Next.js, take a look at the following resources:
+To learn more about Clerk.dev, Cerbos and Next.js, take a look at the following resources:
 
-- [Quick start](https://docs.clerk.dev/get-started/nextjs?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter)
+- [Cerbos Website](https://cerbos.dev)
+- [Cerbos Documentation](https://docs.cerbos.dev)
+- [Clerk Quick start](https://docs.clerk.dev/get-started/nextjs?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter)
 - [Clerk.dev Documentation](https://docs.clerk.dev/?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter) - learn about Clerk.dev features and API.
 - [Next.js Documentation](https://nextjs.org/docs?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter) - learn about Next.js features and API.

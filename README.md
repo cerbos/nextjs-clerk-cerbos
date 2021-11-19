@@ -1,4 +1,4 @@
-# Clerk and Next.js Example
+# Clerk, Cerbos and Next.js Example
 
 This example shows how to use [Clerk](https://www.clerk.dev/?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter) with [Cerbos](https://cerbos.dev) in a Next.js application. The example features adding sign up, sign in, profile management, and an authenticated API route to your Next.js application which using Cerbos to authorize access.
 

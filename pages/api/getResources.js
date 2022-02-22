@@ -1,5 +1,5 @@
 import { requireSession, users } from "@clerk/nextjs/api";
-const { Cerbos } = require("cerbos");
+const { Cerbos } = require("@cerbos/sdk");
 const cerbos = new Cerbos({
   hostname: "https://demo-express-clerk-cerbos-pdp-qh5dbmiiva-uk.a.run.app/", // The Cerbos PDP instance
 });

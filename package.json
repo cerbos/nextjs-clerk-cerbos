@@ -6,8 +6,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@cerbos/sdk": "^0.4.1",
     "@clerk/nextjs": "^2.0.1",
-    "cerbos": "^0.0.5",
     "next": "11.1.2",
     "react": "17.0.2",
     "react-dom": "17.0.2"

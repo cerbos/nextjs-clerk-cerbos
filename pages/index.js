@@ -47,51 +47,69 @@ const SignupLink = () => (
 const userAPISample = (
   id
 ) => `import { requireSession, users } from "@clerk/nextjs/api";
-const { Cerbos } = require("cerbos");
-const cerbos = new Cerbos({
-  hostname: "http://localhost:3592", // The Cerbos PDP instance
-});
+import { GRPC } from "@cerbos/grpc";
+const cerbos = new GRPC("localhost:3592");
 
 export default requireSession(async (req, res) => {
-  const user = await users.getUser(req.session.userId);
+  const user = await users.getUser("${id}");
+
+  const roles = user.publicMetadata.role
+    ? [user.publicMetadata.role]
+    : ["user"];
+
   const cerbosPayload = {
     principal: {
-      id: "${id}", // Clerk user ID
-      roles: user.publicMetadata.roles, // Clerk user roles
-      // pass in the Clerk user profile to use attributes in policies
-      attr: user,
+      id: "${id}",
+      roles, //roles from Clerk profile
+      attributes: user,
     },
-    // these resources would be fetched from a DB normally
-    resource: {
-      kind: "contact",
-      instances: {
-        "id#1": {
-          attr: {
+    resources: [
+      {
+        resource: {
+          kind: "contact",
+          id: "1",
+          attributes: {
             owner: "${id}", // faked to demostrate ownership policy
             lastUpdated: "2021-10-10",
           },
         },
-        "id#2": {
-          attr: {
+        // the list of actions on the resource to check authorization for
+        actions: ["read", "create", "update", "delete"],
+      },
+
+      {
+        resource: {
+          kind: "contact",
+          id: "2",
+          attributes: {
             owner: "somerUserId",
-            lastUpdated: "2021-01-20",
+            lastUpdated: "2021-10-10",
           },
         },
+        // the list of actions on the resource to check authorization for
+        actions: ["read", "create", "update", "delete"],
       },
-    },
-    // the list of actions on the resource to check authorization for
-    actions: ["read", "update", "delete"],
+    ],
   };
+  
 
-  const result = await cerbos.check(cerbosPayload);
+  const result = await cerbos.checkResources(cerbosPayload);
+  
   // make decisions baased on the result
-  // if(result.isAuthorized("id#1", "update")) {
-  //  ... do edit action
+  // if(result.isAllowed({
+  //   resource: {
+  //     kind: "contact",
+  //     id: "1",
+  //   },
+  //   action: "edit",
+  // })) {
+  //  ... can do edit action on resource ID 1
   // }
 
   // return the payload for demo purposes
-  res.json(result.resp);
-});`;
+  res.json(result.results);
+});
+`;
 
 // Main component using <SignedIn> & <SignedOut>.
 //

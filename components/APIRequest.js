@@ -62,7 +62,8 @@ export const APIRequest = ({
           <SignedOut>{signedOutMessage}</SignedOut>
         </em>
       </h4>
-      {responseData.resourceInstances && (
+
+      {responseData && responseData.length > 0 && (
         <table className={styles.responseTable}>
           <thead>
             <tr>
@@ -73,48 +74,16 @@ export const APIRequest = ({
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>id#1</td>
-              <td>
-                {responseData.resourceInstances["id#1"]?.actions?.read ==
-                "EFFECT_ALLOW"
-                  ? "✅"
-                  : "❌"}
-              </td>
-              <td>
-                {responseData.resourceInstances["id#1"]?.actions?.update ==
-                "EFFECT_ALLOW"
-                  ? "✅"
-                  : "❌"}
-              </td>
-              <td>
-                {responseData.resourceInstances["id#1"]?.actions?.delete ==
-                "EFFECT_ALLOW"
-                  ? "✅"
-                  : "❌"}
-              </td>
-            </tr>
-            <tr>
-              <td>id#2</td>
-              <td>
-                {responseData.resourceInstances["id#2"]?.actions?.read ==
-                "EFFECT_ALLOW"
-                  ? "✅"
-                  : "❌"}
-              </td>
-              <td>
-                {responseData.resourceInstances["id#2"]?.actions?.update ==
-                "EFFECT_ALLOW"
-                  ? "✅"
-                  : "❌"}
-              </td>
-              <td>
-                {responseData.resourceInstances["id#2"]?.actions?.delete ==
-                "EFFECT_ALLOW"
-                  ? "✅"
-                  : "❌"}
-              </td>
-            </tr>
+            {responseData.map((r) => {
+              return (
+                <tr>
+                  <td>{r.resource.id}</td>
+                  <td>{r.actions?.read == "EFFECT_ALLOW" ? "✅" : "❌"}</td>
+                  <td>{r.actions?.update == "EFFECT_ALLOW" ? "✅" : "❌"}</td>
+                  <td>{r.actions?.delete == "EFFECT_ALLOW" ? "✅" : "❌"}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}

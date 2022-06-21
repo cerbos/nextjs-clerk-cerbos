@@ -1,8 +1,11 @@
 import { requireSession, users } from "@clerk/nextjs/api";
-const { Cerbos } = require("@cerbos/sdk");
-const cerbos = new Cerbos({
-  hostname: "https://demo-express-clerk-cerbos-pdp-qh5dbmiiva-uk.a.run.app/", // The Cerbos PDP instance
-});
+import { GRPC } from "@cerbos/grpc";
+const cerbos = new GRPC(
+  "demo-express-clerk-cerbos-pdp-qh5dbmiiva-uk.a.run.app",
+  {
+    tls: true,
+  }
+);
 
 export default requireSession(async (req, res) => {
   const user = await users.getUser(req.session.userId);
@@ -15,31 +18,38 @@ export default requireSession(async (req, res) => {
     principal: {
       id: req.session.userId,
       roles, //roles from Clerk profile
-      attr: {
+      attributes: {
         email: user.email,
       },
     },
-    resource: {
-      kind: "contact",
-      instances: {
-        "id#1": {
-          attr: {
+    resources: [
+      {
+        resource: {
+          kind: "contact",
+          id: "1",
+          attributes: {
             owner: req.session.userId,
             lastUpdated: new Date(2020, 10, 10),
           },
         },
-        "id#2": {
-          attr: {
+        actions: ["read", "create", "update", "delete"],
+      },
+
+      {
+        resource: {
+          kind: "contact",
+          id: "2",
+          attributes: {
             owner: "test2",
-            lastUpdated: new Date(2020, 10, 12),
+            lastUpdated: new Date(2020, 10, 10),
           },
         },
+        actions: ["read", "create", "update", "delete"],
       },
-    },
-    actions: ["read", "update", "delete"],
+    ],
   };
+  console.log(cerbosPayload);
 
-  const result = await cerbos.check(cerbosPayload);
-  delete result.resp.meta;
-  res.json(result.resp);
+  const result = await cerbos.checkResources(cerbosPayload);
+  res.json(result.results);
 });

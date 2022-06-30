@@ -47,8 +47,8 @@ const SignupLink = () => (
 const userAPISample = (
   id
 ) => `import { requireSession, users } from "@clerk/nextjs/api";
-import { GRPC } from "@cerbos/grpc";
-const cerbos = new GRPC("localhost:3592");
+import { GRPC as Cerbos } from "@cerbos/grpc";
+const cerbos = new Cerbos("localhost:3593");
 
 export default requireSession(async (req, res) => {
   const user = await users.getUser("${id}");

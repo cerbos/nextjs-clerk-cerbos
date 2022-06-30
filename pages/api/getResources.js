@@ -1,6 +1,6 @@
 import { requireSession, users } from "@clerk/nextjs/api";
-import { GRPC } from "@cerbos/grpc";
-const cerbos = new GRPC(
+import { GRPC as Cerbos } from "@cerbos/grpc";
+const cerbos = new Cerbos(
   "demo-express-clerk-cerbos-pdp-qh5dbmiiva-uk.a.run.app",
   {
     tls: true,

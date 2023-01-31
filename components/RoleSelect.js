@@ -1,13 +1,15 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import styles from "../styles/Home.module.css";
 
 const RoleSelect = () => {
-  const user = useUser();
-  const [currentRole, setCurrentRole] = React.useState(
-    user.publicMetadata.role || "user"
-  );
-  const [loading, setLoading] = React.useState(false);
+  const { user } = useUser();
+  const [currentRole, setCurrentRole] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setCurrentRole(user.publicMetadata?.role);
+  }, []);
 
   const setRole = async (role) => {
     setLoading(true);

@@ -59,10 +59,19 @@
 }
 
 .card {
-  min-height: 135px;
   border: 2px solid #fff;
   border-radius: 0.5em;
   transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.section {
+  padding-top: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.code {
+  padding: 0.1em 0.4em;
+  background-color: #f2f2f2;
 }
 
 .card:empty {
@@ -170,10 +179,6 @@
     text-decoration: underline;
   }
 
-  .cards {
-    margin: 4rem 0;
-  }
-
   .card {
     margin-bottom: 1rem;
     border-color: #f2f2f2;
@@ -202,6 +207,16 @@
     padding-left: 28px;
     flex-direction: row;
     height: inherit;
+  }
+
+  .exampleLinks {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .exampleLinks .card {
+    flex-basis: 50%;
   }
 
   .link {
@@ -256,4 +271,14 @@
 
 .responseTable thead {
   font-weight: 600;
+}
+
+.document {
+  display: contents;
+}
+
+.document img {
+  display: block;
+  margin: 2rem auto;
+  width: 200px;
 }

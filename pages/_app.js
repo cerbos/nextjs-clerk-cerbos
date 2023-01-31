@@ -5,6 +5,7 @@ import Layout from "../components/Layout";
 import Head from "next/head";
 import Script from "next/script";
 import Link from "next/link";
+import Error from "next/error";
 
 /**
  * List pages you want to be publicly accessible, or leave empty if
@@ -25,17 +26,15 @@ const MyApp = ({ Component, pageProps }) => {
    */
   return (
     <ClerkProvider>
-      <Head>
-        <link
-          href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism.css"
-          rel="stylesheet"
-        />
-        <title>Clerk + Cerbos Demo App</title>
-      </Head>
       <Script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js" />
       <Script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js" />
       <Layout>
-        {publicPages.includes(router.pathname) ? (
+        {pageProps.error ? (
+          <Error
+            statusCode={pageProps.error.statusCode}
+            title={pageProps.error.message}
+          />
+        ) : publicPages.includes(router.pathname) ? (
           <Component {...pageProps} />
         ) : (
           <>
@@ -45,11 +44,8 @@ const MyApp = ({ Component, pageProps }) => {
             <SignedOut>
               <main>
                 <p>
-                  Please{" "}
-                  <Link href="/sign-in">
-                    <a>sign in</a>
-                  </Link>{" "}
-                  to access this page.
+                  Please <Link href="/sign-in">sign in</Link> to access this
+                  page.
                 </p>
               </main>
             </SignedOut>

@@ -1,10 +1,13 @@
-import { requireSession, users } from "@clerk/nextjs/api";
+import { getAuth, clerkClient } from "@clerk/nextjs/server";
 
-export default requireSession(async (req, res) => {
-  await users.updateUser(req.session.userId, {
+export default async function handler(req, res) {
+  const { userId } = getAuth(req);
+  clerkClient.users.updateUser(userId, {
     publicMetadata: {
       role: req.body.role,
     },
   });
-  res.json({ ok: true });
-});
+  const data = { userId, role: req.body.role };
+
+  return res.status(200).json({ data });
+}

@@ -6,10 +6,15 @@
     "start": "next start"
   },
   "dependencies": {
-    "@cerbos/grpc": "^0.5.2",
-    "@clerk/nextjs": "^2.0.1",
-    "next": "^12.1.6",
+    "@cerbos/grpc": "^0.8.1",
+    "@cerbos/http": "^0.8.1",
+    "@clerk/nextjs": "^4.7.0",
+    "next": "^13.1.5",
+    "prismjs": "^1.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "browser": {
+    "buffer": false
   }
 }

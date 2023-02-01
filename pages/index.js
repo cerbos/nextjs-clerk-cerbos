@@ -8,39 +8,35 @@ import CerbosPolicy from "../components/CerbosPolicy";
 import RoleSelect from "../components/RoleSelect";
 
 const ClerkFeatures = () => (
-  <Link href="/user">
-    <a className={styles.cardContent}>
-      <img src="/icons/layout.svg" />
-      <div>
-        <h3>Manage your Clerk user profile</h3>
-        <p>
-          Interact with the user button, user profile, and more to preview what
-          your users will see
-        </p>
-      </div>
-      <div className={styles.arrow}>
-        <img src="/icons/arrow-right.svg" />
-      </div>
-    </a>
+  <Link href="/user" className={styles.cardContent}>
+    <img src="/icons/layout.svg" />
+    <div>
+      <h3>Manage your Clerk user profile</h3>
+      <p>
+        Interact with the user button, user profile, and more to preview what
+        your users will see
+      </p>
+    </div>
+    <div className={styles.arrow}>
+      <img src="/icons/arrow-right.svg" />
+    </div>
   </Link>
 );
 
 const SignupLink = () => (
-  <Link href="/sign-up">
-    <a className={styles.cardContent}>
-      <img src="/icons/user-plus.svg" />
-      <div>
-        <h3>Log in/Sign up for an account</h3>
-        <p>
-          Login to your account or sign up for a new account maanged by
-          Clerk.dev. This will provide your identity which will be used by
-          Cerbos for authorization.
-        </p>
-      </div>
-      <div className={styles.arrow}>
-        <img src="/icons/arrow-right.svg" />
-      </div>
-    </a>
+  <Link href="/sign-up" className={styles.cardContent}>
+    <img src="/icons/user-plus.svg" />
+    <div>
+      <h3>Log in/Sign up for an account</h3>
+      <p>
+        Login to your account or sign up for a new account maanged by Clerk.dev.
+        This will provide your identity which will be used by Cerbos for
+        authorization.
+      </p>
+    </div>
+    <div className={styles.arrow}>
+      <img src="/icons/arrow-right.svg" />
+    </div>
   </Link>
 );
 
@@ -126,7 +122,11 @@ const Main = () => {
         authorization.
       </p>
 
-      <div className={styles.cards}>
+      <SignedIn>
+        <CerbosDemo />
+      </SignedIn>
+      <div className={styles.backend}>
+        <h2>Clerk - User Profile</h2>
         <div className={styles.card}>
           <SignedIn>
             <ClerkFeatures />
@@ -137,27 +137,32 @@ const Main = () => {
         </div>
       </div>
 
-      <SignedIn>
-        <CerbosPolicy />
-        <CerbosDemo />
-      </SignedIn>
-
       <div className={styles.links}>
-        <Link href="https://docs.clerk.dev?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter">
-          <a target="_blank" rel="noopener" className={styles.link}>
-            <span className={styles.linkText}>Read Clerk documentation</span>
-          </a>
-        </Link>
-        <Link href="https://docs.cerbos.dev">
-          <a target="_blank" rel="noopener" className={styles.link}>
-            <span className={styles.linkText}>Read Cerbos documentation</span>
-          </a>
-        </Link>
-        <Link href="https://nextjs.org/docs">
-          <a target="_blank" rel="noopener" className={styles.link}>
-            <span className={styles.linkText}>Read NextJS documentation</span>
-          </a>
-        </Link>
+        <a
+          href="https://docs.clerk.dev?utm_source=github&utm_medium=starter_repos&utm_campaign=nextjs_starter"
+          target="_blank"
+          rel="noopener"
+          className={styles.link}
+        >
+          <span className={styles.linkText}>Read Clerk documentation</span>
+        </a>
+        <a
+          target="_blank"
+          rel="noopener"
+          className={styles.link}
+          href="https://docs.cerbos.dev"
+        >
+          <span className={styles.linkText}>Read Cerbos documentation</span>
+        </a>
+
+        <a
+          target="_blank"
+          rel="noopener"
+          className={styles.link}
+          href="https://nextjs.org/docs"
+        >
+          <span className={styles.linkText}>Read NextJS documentation</span>
+        </a>
       </div>
     </main>
   );
@@ -169,19 +174,106 @@ const CerbosDemo = () => {
   return (
     <div>
       <RoleSelect />
-      <APIRequest
-        apiSample={userAPISample(user.id)}
-        endpoint={"/api/getResources"}
-        title={`Access API authorized by Cerbos`}
-        intro={`Now that you are authenticated as ${user.primaryEmailAddress} the following makes a request to the API endpoint of a sample CRM application. This will call Cerbos to check that you are authorized based on the resources being requested. The result will be returned below demonstrating the authorization decision from Cerbos.`}
-        signedInMessage={
-          "You are signed in so the actions for two contact resources will be returned based on Cerbos policies"
-        }
-        signedOutMessage={"You are signed out so unauthorized will be returned"}
-        description={
-          "Retrieve what permissions a user has on resouces based on upon Cerbos policies. The backend will make an authorization call to the Cerbos instance using your Clerk identity and two sample resouces."
-        }
-      />
+
+      <div className={styles.exampleLinks}>
+        <div className={styles.card} disabled={!user.user.publicMetadata?.role}>
+          <a href="#resource-access" className={styles.cardContent}>
+            <img src="/icons/server.svg" alt="" />
+            <h3>Resource Access Demo</h3>
+            <div></div>
+          </a>
+        </div>
+        <div className={styles.card} disabled={!user.user.publicMetadata?.role}>
+          <a href="#route-guard" className={styles.cardContent}>
+            <img src="/icons/lock.svg" alt="" />
+            <h3>Route Guard Demo</h3>
+            <div></div>
+          </a>
+        </div>
+      </div>
+      <CerbosPolicy />
+      <section id="resource-access" className={styles.section}>
+        <APIRequest
+          apiSample={userAPISample(user.id)}
+          endpoint={"/api/getResources"}
+          title={`Access API authorized by Cerbos`}
+          intro={`Now that you are authenticated as ${user.primaryEmailAddress} the following makes a request to the API endpoint of a sample CRM application. This will call Cerbos to check that you are authorized based on the resources being requested. The result will be returned below demonstrating the authorization decision from Cerbos.`}
+          signedInMessage={
+            "You are signed in so the actions for two contact resources will be returned based on Cerbos policies"
+          }
+          signedOutMessage={
+            "You are signed out so unauthorized will be returned"
+          }
+          description={
+            "Retrieve what permissions a user has on resouces based on upon Cerbos policies. The backend will make an authorization call to the Cerbos instance using your Clerk identity and two sample resouces."
+          }
+        />
+      </section>
+      <section id="route-guard" className={styles.section}>
+        <div className={styles.backend}>
+          <h2>Demo: Guarded Routes</h2>
+          <p>
+            For this demo set a <b>role</b> on your Clerk user above and attempt
+            to access the routes below. The{" "}
+            <code className={styles.code}>admin</code> role has access to all
+            routes, while the <code className={styles.code}>user</code> role
+            only has access to the user route.
+          </p>
+          <div className={styles.card}>
+            <Link href="/documents/1" className={styles.cardContent}>
+              <img src="/icons/lock.svg" alt="" />
+              <div>
+                <h3>A Route the Admin user role can access</h3>
+                <p>
+                  This route is <b>only</b> accessible by users with the{" "}
+                  <code className={styles.code}>admin</code> role.
+                </p>
+              </div>
+              <div className={styles.arrow}>
+                <img src="/icons/arrow-right.svg" alt="" />
+              </div>
+            </Link>
+          </div>
+          <div className={styles.card}>
+            <Link href="/documents/2" className={styles.cardContent}>
+              <img src="/icons/external-link.svg" alt="" />
+              <div>
+                <h3>A Route the user who owns the resource can access</h3>
+                <p>
+                  This route is <b>only</b> accessible by users with the{" "}
+                  <code className={styles.code}>admin</code> role.
+                </p>
+                <p>
+                  This route is "guarded" by the{" "}
+                  <code className={styles.code}>id</code> of the user matching
+                  the <code className={styles.code}>author</code>
+                  property of the <b>document</b> resource.
+                </p>
+              </div>
+              <div className={styles.arrow}>
+                <img src="/icons/arrow-right.svg" alt="" />
+              </div>
+            </Link>
+          </div>
+          <div className={styles.card}>
+            <Link href="/documents/3" className={styles.cardContent}>
+              <img src="/icons/document.svg" alt="" />
+              <div>
+                <h3>A Route the user does not own</h3>
+                <p>
+                  This route is "guarded" by the{" "}
+                  <code className={styles.code}>id</code> of the{" "}
+                  <code className={styles.code}>author</code> of the
+                  <b>document</b> resource.
+                </p>
+              </div>
+              <div className={styles.arrow}>
+                <img src="/icons/arrow-right.svg" alt="" />
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

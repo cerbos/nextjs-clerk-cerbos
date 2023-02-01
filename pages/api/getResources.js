@@ -1,25 +1,25 @@
-import { requireSession, users } from "@clerk/nextjs/api";
-import { GRPC as Cerbos } from "@cerbos/grpc";
-const cerbos = new Cerbos(
-  "demo-express-clerk-cerbos-pdp-qh5dbmiiva-uk.a.run.app",
-  {
-    tls: true,
-  }
-);
+import { getAuth, clerkClient } from "@clerk/nextjs/server";
+import { cerbos } from "../../utils/cerbos";
 
-export default requireSession(async (req, res) => {
-  const user = await users.getUser(req.session.userId);
+export default async function handler(req, res) {
+  const { userId } = getAuth(req);
 
-  const roles = user.publicMetadata.role
-    ? [user.publicMetadata.role]
+  const user = await clerkClient.users.getUser(userId);
+
+  const roles = user?.publicMetadata?.role
+    ? [user?.publicMetadata?.role]
     : ["user"];
+
+  const email = user?.emailAddresses.find(
+    (e) => e.id === user.primaryEmailAddressId
+  )?.emailAddress;
 
   const cerbosPayload = {
     principal: {
-      id: req.session.userId,
+      id: userId,
       roles, //roles from Clerk profile
       attributes: {
-        email: user.email,
+        email: email,
       },
     },
     resources: [
@@ -28,7 +28,7 @@ export default requireSession(async (req, res) => {
           kind: "contact",
           id: "1",
           attributes: {
-            owner: req.session.userId,
+            owner: userId,
             lastUpdated: new Date(2020, 10, 10),
           },
         },
@@ -52,4 +52,4 @@ export default requireSession(async (req, res) => {
 
   const result = await cerbos.checkResources(cerbosPayload);
   res.json(result.results);
-});
+}

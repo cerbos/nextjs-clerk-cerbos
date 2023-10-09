@@ -6,8 +6,8 @@
     "start": "next start"
   },
   "dependencies": {
-    "@cerbos/grpc": "^0.13.0",
-    "@cerbos/http": "^0.14.0",
+    "@cerbos/grpc": "^0.14.0",
+    "@cerbos/http": "^0.15.0",
     "@clerk/nextjs": "^4.7.0",
     "next": "^13.1.5",
     "prismjs": "^1.29.0",

@@ -9,7 +9,7 @@
     "@cerbos/grpc": "^0.14.0",
     "@cerbos/http": "^0.15.0",
     "@clerk/nextjs": "^4.7.0",
-    "next": "^13.1.5",
+    "next": "^14.0.0",
     "prismjs": "^1.29.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

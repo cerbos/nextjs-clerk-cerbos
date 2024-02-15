@@ -1,9 +1,7 @@
-import { withClerkMiddleware } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { authMiddleware } from "@clerk/nextjs";
 
-export default withClerkMiddleware((req) => {
-  return NextResponse.next();
-});
+export default authMiddleware();
 
-// Stop Middleware running on static files
-export const config = { matcher: "/((?!.*\\.).*)" };
+export const config = {
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
+};

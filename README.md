@@ -77,8 +77,8 @@ There is a `.env.local.example` file in the root of the project that you can cop
 
 ```sh
 # .env.local
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=you-publishable-key
-CLERK_SECRET_KEY=your-secret-key
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_xxxxx
+CLERK_SECRET_KEY=sk_xxxxx
 ```
 
 The Clerk API keys can be found at the [API Keys page](https://dashboard.clerk.dev/last-active?path=api-keys) in the Clerk dashboard.
@@ -94,7 +94,7 @@ In the event in which you would like to run a local copy of Cerbos, you can easi
 
 #### Use a local instance of Cerbos
 
-1. Run a Local istance of Cerbos 
+1. Run a Local istance of Cerbos
 
 **If you have [Docker](https://www.docker.com/) installed**: you can simply run the following command to start Cerbos in a Docker container:
 
@@ -102,6 +102,7 @@ In the event in which you would like to run a local copy of Cerbos, you can easi
 cd ./cerbos
 sh ./start.sh
 ```
+
 2. Change the app to use query our local instance instead than the deployed version
 
 To achieve this open `./utils/cerbos.js` and replace the existing code, with the suggested replacement in the comment. The end file should look something like this:
@@ -109,10 +110,7 @@ To achieve this open `./utils/cerbos.js` and replace the existing code, with the
 ```javascript
 import { GRPC } from "@cerbos/grpc";
 
-export const cerbos = new GRPC(
-  "localhost:3593",
-  { tls: false }
-);
+export const cerbos = new GRPC("localhost:3593", { tls: false });
 ```
 
 3. Make changes to your Cerbos Policies

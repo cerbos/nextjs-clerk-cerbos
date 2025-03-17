@@ -6,7 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@cerbos/grpc": "^0.20.0",
+    "@cerbos/grpc": "^0.21.0",
     "@cerbos/http": "^0.21.0",
     "@clerk/nextjs": "^4.7.0",
     "next": "^14.0.0",

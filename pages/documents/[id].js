@@ -7,7 +7,8 @@ import styles from "../../styles/Home.module.css";
 export async function getServerSideProps({ req, params }) {
   // fetch the user from the session
   const { userId } = getAuth(req);
-  const user = userId ? await clerkClient.users.getUser(userId) : null;
+  const client = userId ? await clerkClient() : null;
+  const user = userId ? await client.users.getUser(userId) : null;
 
   // cerbos requires an array of `roles` so we just wrap `role` in an array
   const roles = user.publicMetadata.role ? [user.publicMetadata.role] : [];
@@ -78,7 +79,8 @@ export default function DocumentRoute({ data }) {
             source={`export async function getServerSideProps({ req, params }) {
   // fetch the user from the session
   const { userId } = getAuth(req);
-  const user = userId ? await clerkClient.users.getUser(userId) : null;
+  const client = userId ? await clerkClient() : null;
+  const user = userId ? await client.users.getUser(userId) : null;
 
   // cerbos requires an array of \`roles\` so we just wrap \`role\` in an array
   const roles = user.publicMetadata.role ? [user.publicMetadata.role] : [];

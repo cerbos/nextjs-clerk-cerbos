@@ -2,7 +2,7 @@ import React from "react";
 import Head from "next/head";
 import Link from "next/link";
 import styles from "../styles/Home.module.css";
-import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
+import { Show, useUser } from "@clerk/nextjs";
 import { APIRequest } from "../components/APIRequest";
 import CerbosPolicy from "../components/CerbosPolicy";
 import RoleSelect from "../components/RoleSelect";
@@ -107,12 +107,12 @@ export default requireSession(async (req, res) => {
 });
 `;
 
-// Main component using <SignedIn> & <SignedOut>.
+// Main component using the <Show> component.
 //
-// The SignedIn and SignedOut components are used to control rendering depending
+// The <Show> component is used to control rendering depending
 // on whether or not a visitor is signed in.
 //
-// https://docs.clerk.dev/frontend/react/signedin-and-signedout
+// https://clerk.com/docs/references/components/control/show
 const Main = () => {
   return (
     <main className={styles.main}>
@@ -122,18 +122,18 @@ const Main = () => {
         authorization.
       </p>
 
-      <SignedIn>
+      <Show when="signed-in">
         <CerbosDemo />
-      </SignedIn>
+      </Show>
       <div className={styles.backend}>
         <h2>Clerk - User Profile</h2>
         <div className={styles.card}>
-          <SignedIn>
+          <Show when="signed-in">
             <ClerkFeatures />
-          </SignedIn>
-          <SignedOut>
+          </Show>
+          <Show when="signed-out">
             <SignupLink />
-          </SignedOut>
+          </Show>
         </div>
       </div>
 

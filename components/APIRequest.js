@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "../styles/Home.module.css";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { Show } from "@clerk/nextjs";
 
 export const APIRequest = ({
   apiSample,
@@ -58,8 +58,8 @@ export const APIRequest = ({
       <h4>
         Response
         <em>
-          <SignedIn>{signedInMessage}</SignedIn>
-          <SignedOut>{signedOutMessage}</SignedOut>
+          <Show when="signed-in">{signedInMessage}</Show>
+          <Show when="signed-out">{signedOutMessage}</Show>
         </em>
       </h4>
 

@@ -4,7 +4,8 @@ import { cerbos } from "../../utils/cerbos";
 export default async function handler(req, res) {
   const { userId } = getAuth(req);
 
-  const user = await clerkClient.users.getUser(userId);
+  const client = await clerkClient();
+  const user = await client.users.getUser(userId);
 
   const roles = user?.publicMetadata?.role
     ? [user?.publicMetadata?.role]

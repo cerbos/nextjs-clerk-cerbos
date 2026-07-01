@@ -2,7 +2,8 @@ import { getAuth, clerkClient } from "@clerk/nextjs/server";
 
 export default async function handler(req, res) {
   const { userId } = getAuth(req);
-  clerkClient.users.updateUser(userId, {
+  const client = await clerkClient();
+  await client.users.updateUser(userId, {
     publicMetadata: {
       role: req.body.role,
     },

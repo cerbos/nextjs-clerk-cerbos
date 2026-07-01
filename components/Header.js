@@ -1,14 +1,14 @@
 import styles from "../styles/Header.module.css";
 import Image from "next/image";
 import Link from "next/link";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { Show, UserButton } from "@clerk/nextjs";
 
-// Header component using <SignedIn> & <SignedOut>.
+// Header component using the <Show> component.
 //
-// The SignedIn and SignedOut components are used to control rendering depending
+// The <Show> component is used to control rendering depending
 // on whether or not a visitor is signed in.
 //
-// https://docs.clerk.dev/frontend/react/signedin-and-signedout
+// https://clerk.com/docs/references/components/control/show
 const Header = () => (
   <header className={styles.header}>
     <div className={styles.left}>
@@ -18,12 +18,12 @@ const Header = () => (
       </Link>
     </div>
     <div className={styles.right}>
-      <SignedOut>
+      <Show when="signed-out">
         <Link href="/sign-in">Sign in</Link>
-      </SignedOut>
-      <SignedIn>
-        <UserButton userProfileURL="/user" afterSignOutAll="/" />
-      </SignedIn>
+      </Show>
+      <Show when="signed-in">
+        <UserButton userProfileUrl="/user" />
+      </Show>
     </div>
   </header>
 );

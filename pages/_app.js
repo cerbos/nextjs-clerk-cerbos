@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import { ClerkProvider, SignedIn, SignedOut } from "@clerk/nextjs";
+import { ClerkProvider, Show } from "@clerk/nextjs";
 import { useRouter } from "next/router";
 import Layout from "../components/Layout";
 import Head from "next/head";
@@ -25,7 +25,7 @@ const MyApp = ({ Component, pageProps }) => {
    * Otherwise, use Clerk to require authentication.
    */
   return (
-    <ClerkProvider {...pageProps}>
+    <ClerkProvider {...pageProps} afterSignOutUrl="/">
       <Script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js" />
       <Script src="https://cdn.jsdelivr.net/npm/prismjs@1/plugins/autoloader/prism-autoloader.min.js" />
       <Layout>
@@ -38,17 +38,17 @@ const MyApp = ({ Component, pageProps }) => {
           <Component {...pageProps} />
         ) : (
           <>
-            <SignedIn>
+            <Show when="signed-in">
               <Component {...pageProps} />
-            </SignedIn>
-            <SignedOut>
+            </Show>
+            <Show when="signed-out">
               <main>
                 <p>
                   Please <Link href="/sign-in">sign in</Link> to access this
                   page.
                 </p>
               </main>
-            </SignedOut>
+            </Show>
           </>
         )}
       </Layout>

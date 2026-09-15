@@ -144,6 +144,7 @@
 
 .logo {
   height: 1.5rem;
+  width: auto;
 }
 
 .links {
@@ -281,4 +282,5 @@
   display: block;
   margin: 2rem auto;
   width: 200px;
+  height: auto;
 }

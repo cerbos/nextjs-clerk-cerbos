@@ -1,20 +1,31 @@
 {
+  "name": "nextjs-clerk-cerbos",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@cerbos/grpc": "^0.29.0",
-    "@cerbos/http": "^0.30.0",
-    "@clerk/nextjs": "^7.5.11",
-    "next": "^16.2.9",
+    "@clerk/nextjs": "^7.9.2",
+    "next": "^16.3.5",
     "prismjs": "^1.30.0",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
-  "browser": {
-    "buffer": false
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/prismjs": "^1.26.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.5",
+    "typescript": "^5.9.0"
   }
 }
